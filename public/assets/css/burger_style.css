@@ -1,0 +1,18 @@
+body {
+    background-color: orange;
+    margin-top: 50px;
+}
+
+form {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    background-color: white;
+}
+

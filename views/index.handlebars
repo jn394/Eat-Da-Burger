@@ -1,27 +1,31 @@
 <div class="container">
 
     <div class="row d-flex justify-content-center">
-        {{!-- <img src="./public/assets/img/burger.jpg" alt="burger pic" height="300" width="300"> --}}
+        <img src="../public/assets/img/burger.jpg" alt="burger pic" height="100" width="100">
     </div>
 
     <div class="row d-flex justify-content-center">
-        <h1>Eat-Da_Burger!</h1>
+        <h1>Eat-Da-Burger!</h1>
     </div>
 
-    <div class="row">
+    <div class="row mt-2">
         <div class="col-md-6">
             <ul>
                 {{#each burgers}}
-                <li>
-                    <p>
-                        {{this.id}}. {{this.burger_name}}
-                    </p>
-                </li>
+                {{#unless devoured}}
+                {{> burgers/burger-block}}
+                {{/unless}}
                 {{/each}}
             </ul>
         </div>
         <div class="col-md-6">
-            <ul id="devouredList"></ul>
+            <ul>
+                {{#each burgers}}
+                {{#if devoured}}
+                {{> burgers/burger-block}}
+                {{/if}}
+                {{/each}}
+            </ul>
         </div>
     </div>
 
@@ -34,13 +38,13 @@
         </form>
     </div>
     <div class="row d-flex justify-content-center">
-        <button type="submit">Submit</button>
+        <button id="burgerSubmit" type="button" class="btn btn-danger">Submit</button>
     </div>
 </div>
 
 <script type="text/javascript">
 
-    $("#addBurger").on("submit", function (event) {
+    $("#burgerSubmit").on("click", function (event) {
         // Make sure to preventDefault on a submit event.
         event.preventDefault();
 
@@ -57,6 +61,29 @@
         }).then(
             function () {
                 console.log("added new burger");
+                // Reload the page to get the updated list
+                location.reload();
+            }
+        );
+    });
+
+    $(".devoured-burger").on("click", function (event) {
+        event.preventDefault();
+
+        var id = $(this).data("id");
+        var newDevour = $(this).data("devoured");
+
+        var newDevourState = {
+            devoured: newDevour
+        };
+
+        // Send the PUT request.
+        $.ajax("/api/burgers/" + id, {
+            type: "PUT",
+            data: newDevourState
+        }).then(
+            function () {
+                console.log("changed devour to", newDevour);
                 // Reload the page to get the updated list
                 location.reload();
             }
